@@ -1,6 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 // import { useHistory } from 'react-router-dom'; it is in older version
 import { useNavigate } from 'react-router-dom';
+
+import noteContext from '../context/notes/noteContext'
+
 
 
 const Login = (props) => {
@@ -8,6 +11,8 @@ const Login = (props) => {
     const host = "https://inotebookbackend5.onrender.com" //we can make env file for these things
 
 
+    const context = useContext(noteContext);
+    const { isLoading, setIsLoading } = context;
 
     let navigate = useNavigate();
 
@@ -16,6 +21,8 @@ const Login = (props) => {
 
         //API call
         const url = `${host}/api/auth/login/`;
+        setIsLoading(true);
+        props.showAlert("Loading...", "success");
         const response = await fetch(url, {
             method: "POST",
             headers: {
@@ -24,7 +31,9 @@ const Login = (props) => {
             body: JSON.stringify({ email: credentials.email, password: credentials.password })
         });
         const json = await response.json();
-        console.log(json);
+        setIsLoading(false);
+
+        // console.log(json);
         if (json.success) {
             //save the token and redirect
             localStorage.setItem('token', json.authtoken);
@@ -52,6 +61,9 @@ const Login = (props) => {
     }
     return (
         <div className='container'>
+            {/* {
+                isLoading && props.showAlert("Loading...", "success")
+            } */}
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="email">Email address</label>

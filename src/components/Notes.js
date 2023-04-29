@@ -12,7 +12,7 @@ function Notes(props) {
     let navigate = useNavigate();
 
     const context = useContext(noteContext);
-    const { notes, getNotes, editNote } = context;
+    const { notes, getNotes, editNote, isLoading } = context;
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
@@ -94,6 +94,7 @@ function Notes(props) {
 
             <div className="row my-3">
                 <h2>your notes</h2>
+                {isLoading && <p>Loading...</p>}
                 <div className="container">
                     {/* {if({notes.length}===0){
                         'no notes to show'

@@ -11,6 +11,8 @@ const NoteState = (props) => {
     const host = "https://inotebookbackend5.onrender.com"
     const notesInitial = [];
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const [notes, setNotes] = useState(notesInitial);
 
     // const [userToken, setUserToken] = useState("");
@@ -20,6 +22,7 @@ const NoteState = (props) => {
     const addNote = async (title, description, tag) => {
         //API call
         const url = `${host}/api/notes/addnote/`;
+        setIsLoading(true);
         const response = await fetch(url, {
             method: "POST",
             headers: {
@@ -40,12 +43,14 @@ const NoteState = (props) => {
         //     setNotes(notes.concat(json));
         // }
         setNotes(notes.concat(json));
+        setIsLoading(false);
     }
 
     //fetch all note
     const getNotes = async () => {
         //API call
         const url = `${host}/api/notes/fetchallnotes/`;
+        setIsLoading(true);
         const response = await fetch(url, {
             method: "GET",
             headers: {
@@ -59,6 +64,8 @@ const NoteState = (props) => {
         // console.log(json);
 
         setNotes(json);
+        setIsLoading(false);
+
 
     }
 
@@ -66,6 +73,7 @@ const NoteState = (props) => {
     const deleteNote = async (id) => {
         //API call
         const url = `${host}/api/notes/deletenote/${id}`;
+        setIsLoading(true);
         await fetch(url, {
             method: "DELETE",
             headers: {
@@ -81,12 +89,15 @@ const NoteState = (props) => {
         // console.log("deleting this id = ", id);
         const newNotes = notes.filter((note) => { return note._id !== id });
         setNotes(newNotes);
+        setIsLoading(false);
+
     }
 
     //edit a note
 
     const editNote = async (id, title, description, tag) => {
         //api call
+        setIsLoading(true);
         const url = `${host}/api/notes/updatenote/${id}`;
         await fetch(url, {
             method: "PUT",
@@ -119,10 +130,12 @@ const NoteState = (props) => {
             }
         }
         setNotes(newNotes);
+        setIsLoading(false);
+
     }
 
     return (
-        <NoteContext.Provider value={{ notes, addNote, getNotes, deleteNote, editNote }}>
+        <NoteContext.Provider value={{ notes, addNote, getNotes, deleteNote, editNote, isLoading, setIsLoading }}>
             {props.children}
         </NoteContext.Provider>
     )

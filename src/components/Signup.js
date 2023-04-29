@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
+import noteContext from '../context/notes/noteContext'
 
 
 
@@ -10,6 +11,9 @@ const Signup = (props) => {
 
 
 
+    const context = useContext(noteContext);
+    const { isLoading, setIsLoading } = context;
+
     let navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -17,6 +21,8 @@ const Signup = (props) => {
 
         //API call
         const url = `${host}/api/auth/createuser/`;
+        setIsLoading(true);
+        props.showAlert("Loading...", "success")
         const response = await fetch(url, {
             method: "POST",
             headers: {
@@ -25,7 +31,8 @@ const Signup = (props) => {
             body: JSON.stringify({ name: credentials.name, email: credentials.email, password: credentials.cpassword })
         });
         const json = await response.json();
-        console.log(json);
+        // console.log(json);
+        setIsLoading(false);
         if (json.success) {
             //save the token and redirect
             localStorage.setItem('token', json.authtoken);
@@ -52,6 +59,9 @@ const Signup = (props) => {
     }
     return (
         <div className='container'>
+            {/* {
+                isLoading && props.showAlert("Loading...", "success")
+            } */}
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="name">Name</label>
