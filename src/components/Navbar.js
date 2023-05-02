@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 function Navbar(props) {
@@ -15,6 +15,30 @@ function Navbar(props) {
         // console.log("logout successfully")
     }
 
+    const [bl, setBl] = useState(false);
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+        console.log(`The screen width is ${screenWidth}`);
+
+        if (screenWidth > 991) {
+            setBl(false)
+        }
+    }, [screenWidth]); // Run the effect every time screenWidth changes
+
+    useEffect(() => {
+        // Add event listener to window object
+        window.addEventListener('resize', handleResize);
+        // Remove event listener on component unmount
+        // return () => {
+        //     window.removeEventListener('resize', handleResize);
+        // }; //doubt here
+    }, []); // Run only once on component mount
+
+    function handleResize() {
+        // Update the screenWidth state with new window width
+        setScreenWidth(window.innerWidth);
+    }
 
     return (
         <div>
@@ -23,7 +47,7 @@ function Navbar(props) {
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
                 <div className="container-fluid">
                     <Link className="navbar-brand" to="/">My iNotebook</Link>
-                    <button className="navbar-toggler dropdown" type="button" data-toggle="collapse" data-target="/navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <button onClick={() => { setBl(!bl) }} className="navbar-toggler dropdown" type="button" data-toggle="collapse" data-target="/navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
@@ -57,7 +81,24 @@ function Navbar(props) {
                     </div>
                 </div>
             </nav >
+            {
+                bl
+                &&
+                <div className='d-flex flex-row justify-content-end mt-2'>
+                    {
 
+                        !localStorage.getItem('token') ?
+                            <>
+
+                                <Link className="btn btn-primary mx-1" to='/login' role="button">LogIn</Link>
+                                <Link className="btn btn-primary mx-1" to='/signup' role="button">SignUp</Link>
+                            </>
+                            :
+                            <Link className="btn btn-primary mx-1" onClick={logout} to='/login' role="button">LogOut</Link>
+
+                    }
+                </div>
+            }
         </div >
     )
 }
