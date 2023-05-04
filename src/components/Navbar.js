@@ -19,7 +19,7 @@ function Navbar(props) {
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
     useEffect(() => {
-        console.log(`The screen width is ${screenWidth}`);
+        // console.log(`The screen width is ${screenWidth}`);
 
         if (screenWidth > 991) {
             setBl(false)
